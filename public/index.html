@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Phaser</title>
+    <script src="//cdn.jsdelivr.net/phaser/2.2.2/phaser.min.js"></script>
+    <style type="text/css">
+    body {
+        margin: 0;
+    }
+    </style>
+</head>
+
+<body>
+    <audio autoplay controls hidden loop>
+      <source src ="./gospel.mp3">
+    </audio>
+    <script type="text/javascript">
+    var winW = window.innerWidth;
+    var winH = window.innerHeight;
+    var game = new Phaser.Game(winW, winH, Phaser.AUTO, 'Real World Simulator', {
+        preload: preload,
+        create: create,
+        update: update
+    });
+
+    function preload() {
+        game.load.image('god', './gb.png');
+        game.load.image('bullet', './wat.jpg');
+        game.load.image('fags', './fags.jpg');
+        game.load.image('map', './map.jpg');
+    }
+    var sprite;
+    var bullet;
+    var bullets;
+    var bulletTime = 0;
+    var enemies;
+    //  Left, right and space key for controls and WASD cuz i ain't no casual
+    var leftKey;
+    var leftKey2;
+    var rightKey;
+    var rightKey2;
+    var spaceKey;
+    var upKey;
+    var upKey2;
+    var downKey;
+    var downKey2;
+
+    function create() {
+        game.physics.startSystem(Phaser.Physics.ARCADE);
+        background = game.add.tileSprite(0, 0, winW, winH, 'map');
+        background.height = game.height;
+        background.width = game.width;
+        /*Devil spawn */
+        enemies = game.add.group();
+        enemies.enableBody = true;
+        enemies.physicsBodyType = Phaser.Physics.ARCADE;
+        /* Bullet Time Motherfucker. */
+        bullets = game.add.group();
+        bullets.enableBody = true;
+        bullets.physicsBodyType = Phaser.Physics.ARCADE;
+        bullets.createMultiple(10, 'bullet');
+        bullets.callAll('events.onOutOfBounds.add', 'events.onOutOfBounds', resetBullet, this);
+        bullets.setAll('checkWorldBounds', true);
+        /* Initiating our godly western power */
+        sprite = game.add.sprite(winW / 2, winH / 1.25, 'god');
+        game.physics.enable(sprite, Phaser.Physics.ARCADE);
+        sprite.body.collideWorldBounds = true;
+
+
+        //  Registering the keys.
+        this.leftKey = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
+        this.leftKey2 = game.input.keyboard.addKey(Phaser.Keyboard.A);
+        this.rightKey = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+        this.rightKey2 = game.input.keyboard.addKey(Phaser.Keyboard.D);
+        this.spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+        this.upKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
+        this.upKey2 = game.input.keyboard.addKey(Phaser.Keyboard.W);
+        this.downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
+        this.downKey2 = game.input.keyboard.addKey(Phaser.Keyboard.S);
+        //  Stop the following keys from propagating up to the browser
+        game.input.keyboard.addKeyCapture([Phaser.Keyboard.LEFT, Phaser.Keyboard.RIGHT, Phaser.Keyboard.SPACEBAR, Phaser.Keyboard.UP, Phaser.Keyboard.DOWN, Phaser.Keyboard.A, Phaser.Keyboard.D, Phaser.Keyboard.W, Phaser.Keyboard.S]);
+        createScrubs();
+    }
+
+    function update() {
+        game.physics.arcade.overlap(bullets, enemies, kaboom, null, this);
+        sprite.body.velocity.x = 0;
+        sprite.body.velocity.y = 0;
+        if (this.leftKey.isDown) {
+            sprite.body.velocity.x = -200;
+        }
+        if (this.leftKey2.isDown) {
+            sprite.body.velocity.x = -200;
+        }
+        if (this.rightKey.isDown) {
+            sprite.body.velocity.x = 200;
+        }
+        if (this.rightKey2.isDown) {
+            sprite.body.velocity.x = 200;
+        }
+        if (this.upKey.isDown) {
+            sprite.body.velocity.y = -200;
+        }
+        if (this.upKey2.isDown) {
+            sprite.body.velocity.y = -200;
+        }
+        if (this.downKey.isDown) {
+            sprite.body.velocity.y = 200;
+        }
+        if (this.downKey2.isDown) {
+            sprite.body.velocity.y = 200;
+        }
+        if (this.spaceKey.isDown) {
+            fireBullet();
+        }
+
+        if (enemies.countLiving() == 0) {
+          console.log('MGBGA');
+        }
+    }
+
+    function createScrubs() {
+        for (var y = 0; y < 4; y++) {
+            for (var x = 0; x < 25; x++) {
+                var fag = enemies.create(x * 52, y * 50, 'fags');
+                fag.x = Math.floor((Math.random() * winW) + 1);
+                fag.y = Math.floor((Math.random() * (winH / 1.5)) + 1);
+                if (fag.x + 50 > winW) {
+                    fag.kill();
+                }
+            }
+        }
+    }
+
+    function fireBullet() {
+        if (game.time.now > bulletTime) {
+            bullet = bullets.getFirstExists(false);
+            if (bullet) {
+                bullet.reset(sprite.x, sprite.y);
+                bullet.body.velocity.y = -200;
+                bulletTime = game.time.now + 200;
+            }
+        }
+    }
+    // Our Power Must Recharge.
+    function resetBullet(bullet) {
+        bullet.kill();
+    }
+
+    function kaboom(bullet, fag) {
+        bullet.kill();
+        fag.kill();
+    }
+    </script>
+</body>
+
+</html>
