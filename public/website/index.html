@@ -26,17 +26,16 @@
     });
 
     function preload() {
-        game.load.image('god', './gb.png');
-        game.load.image('bullet', './wat.jpg');
-        game.load.image('fags', './fags.jpg');
-        game.load.image('map', './map.jpg');
+        game.load.image('gb', './../images/gb.png');
+        game.load.image('bullet', './../images/bullet.jpg');
+        game.load.image('eu', './../images/eu.jpg');
+        game.load.image('map', './../images/map.jpg');
     }
     var sprite;
     var bullet;
     var bullets;
     var bulletTime = 0;
     var enemies;
-    //  Left, right and space key for controls and WASD cuz i ain't no casual
     var leftKey;
     var leftKey2;
     var rightKey;
@@ -64,7 +63,7 @@
         bullets.callAll('events.onOutOfBounds.add', 'events.onOutOfBounds', resetBullet, this);
         bullets.setAll('checkWorldBounds', true);
         /* Initiating our godly western power */
-        sprite = game.add.sprite(winW / 2, winH / 1.25, 'god');
+        sprite = game.add.sprite(winW / 2, winH / 1.25, 'gb');
         game.physics.enable(sprite, Phaser.Physics.ARCADE);
         sprite.body.collideWorldBounds = true;
 
@@ -81,7 +80,7 @@
         this.downKey2 = game.input.keyboard.addKey(Phaser.Keyboard.S);
         //  Stop the following keys from propagating up to the browser
         game.input.keyboard.addKeyCapture([Phaser.Keyboard.LEFT, Phaser.Keyboard.RIGHT, Phaser.Keyboard.SPACEBAR, Phaser.Keyboard.UP, Phaser.Keyboard.DOWN, Phaser.Keyboard.A, Phaser.Keyboard.D, Phaser.Keyboard.W, Phaser.Keyboard.S]);
-        createScrubs();
+        createEnemies();
     }
 
     function update() {
@@ -121,14 +120,14 @@
         }
     }
 
-    function createScrubs() {
+    function createEnemies() {
         for (var y = 0; y < 4; y++) {
             for (var x = 0; x < 25; x++) {
-                var fag = enemies.create(x * 52, y * 50, 'fags');
-                fag.x = Math.floor((Math.random() * winW) + 1);
-                fag.y = Math.floor((Math.random() * (winH / 1.5)) + 1);
-                if (fag.x + 50 > winW) {
-                    fag.kill();
+                var eu = enemies.create(x * 52, y * 50, 'eu');
+                eu.x = Math.floor((Math.random() * winW) + 1);
+                eu.y = Math.floor((Math.random() * (winH / 1.5)) + 1);
+                if (eu.x + 50 > winW) {
+                    eu.kill();
                 }
             }
         }
@@ -144,14 +143,13 @@
             }
         }
     }
-    // Our Power Must Recharge.
     function resetBullet(bullet) {
         bullet.kill();
     }
 
-    function kaboom(bullet, fag) {
+    function kaboom(bullet, eu) {
         bullet.kill();
-        fag.kill();
+        eu.kill();
     }
     </script>
 </body>
